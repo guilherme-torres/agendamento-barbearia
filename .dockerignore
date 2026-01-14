@@ -1,0 +1,26 @@
+# Git e metadados
+.git
+.gitignore
+
+# Ambiente Virtual e Dependências
+venv/
+.venv/
+env/
+
+# Docker (Não precisam estar dentro da imagem para rodar)
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Segredos e Configurações
+.env
+*.env
+
+# Cache do Python
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Testes e Logs
+.pytest_cache/
+*.log

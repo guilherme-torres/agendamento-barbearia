@@ -1,5 +1,26 @@
-def create_users_table(conn):
-    conn.execute("""
+"""create users table
+
+Revision ID: 013dea2a4754
+Revises: 
+Create Date: 2026-01-14 08:57:16.587613
+
+"""
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = '013dea2a4754'
+down_revision: Union[str, Sequence[str], None] = None
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
+
+
+def upgrade() -> None:
+    """Upgrade schema."""
+    op.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id serial PRIMARY KEY,
         first_name VARCHAR(100) NOT NULL,
@@ -25,3 +46,9 @@ def create_users_table(conn):
     FOR EACH ROW
     EXECUTE FUNCTION set_updated_at();
     """)
+
+
+def downgrade() -> None:
+    """Downgrade schema."""
+    op.execute("DROP TABLE IF EXISTS users CASCADE")
+    op.execute("DROP FUNCTION IF EXISTS set_updated_at CASCADE")

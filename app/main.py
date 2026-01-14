@@ -1,32 +1,43 @@
 from contextlib import asynccontextmanager
 from typing import List
 from fastapi import Depends, FastAPI
-from app.database import get_db, pool
+from app.database import pool
 from app.users.dependencies import get_user_service
-from app.users.schemas import UserCreateDTO, UserResponseDTO
+from app.users.schemas import UserCreateDTO, UserResponseDTO, UserUpdateDTO
 from app.users.service import UserService
-from app.users.tables import create_users_table
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    pool.open()
-    # create tables
-    with get_db() as conn:
-        create_users_table(conn)
+    await pool.open()
     yield
-    pool.close()
+    await pool.close()
 
 app = FastAPI(lifespan=lifespan)
 
 @app.post("/users", response_model=UserResponseDTO)
-def create_user(
+async def create_user(
     data: UserCreateDTO,
     service: UserService = Depends(get_user_service)
 ):
-    return service.create(data)
-
+    return await service.create(data)
 
 @app.get("/users", response_model=List[UserResponseDTO])
-def list_users(service: UserService = Depends(get_user_service)):
-    return service.get_all()
+async def list_users(service: UserService = Depends(get_user_service)):
+    return await service.get_all()
+
+@app.get("/users/{id}", response_model=UserResponseDTO)
+async def get_user(id: int, service: UserService = Depends(get_user_service)):
+    return await service.get(id)
+
+@app.patch("/users/{id}", response_model=UserResponseDTO)
+async def update_user(
+    id: int,
+    data: UserUpdateDTO,
+    service: UserService = Depends(get_user_service)
+):
+    return await service.update(id, data)
+
+@app.delete("/users/{id}")
+async def delete_user(id: int, service: UserService = Depends(get_user_service)):
+    return await service.delete(id)

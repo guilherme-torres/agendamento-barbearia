@@ -4,10 +4,10 @@ from app.users.models import User
 
 
 class UserRepository:
-    def create(self, data: dict):
-        with get_db() as conn:
-            with conn.cursor(row_factory=class_row(User)) as cur:
-                cur.execute("""
+    async def create(self, data: dict):
+        async with get_db() as conn:
+            async with conn.cursor(row_factory=class_row(User)) as cur:
+                await cur.execute("""
                     INSERT INTO users
                     (first_name, last_name, email, password_hash, phone)
                     VALUES (%s, %s, %s, %s, %s)
@@ -20,36 +20,36 @@ class UserRepository:
                     data["password_hash"], 
                     data["phone"]
                 ))
-                return cur.fetchone()
+                return await cur.fetchone()
 
-    def get(self, id: int):
-        with get_db() as conn:
-            with conn.cursor(row_factory=class_row(User)) as cur:
-                cur.execute("""SELECT * FROM users WHERE id = %s""", (id,))
-                return cur.fetchone()
+    async def get(self, id: int):
+        async with get_db() as conn:
+            async with conn.cursor(row_factory=class_row(User)) as cur:
+                await cur.execute("""SELECT * FROM users WHERE id = %s""", (id,))
+                return await cur.fetchone()
 
-    def get_all(self):
-        with get_db() as conn:
-            with conn.cursor(row_factory=class_row(User)) as cur:
-                cur.execute("""SELECT * FROM users LIMIT 100""")
-                return cur.fetchall()
+    async def get_all(self):
+        async with get_db() as conn:
+            async with conn.cursor(row_factory=class_row(User)) as cur:
+                await cur.execute("""SELECT * FROM users LIMIT 100""")
+                return await cur.fetchall()
 
-    def delete(self, id: int):
-        with get_db() as conn:
-            with conn.cursor(class_row=User) as cur:
-                cur.execute("""DELETE FROM users WHERE id = %s RETURNING id""", (id,))
-                return cur.fetchone()
+    async def delete(self, id: int):
+        async with get_db() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute("""DELETE FROM users WHERE id = %s RETURNING id""", (id,))
+                return await cur.fetchone()
 
-    def update(self, id: int, data: dict):
+    async def update(self, id: int, data: dict):
         columns = ", ".join([f"{k} = %s" for k in data.keys()])
         values = list(data.values())
         values.append(id)
-        with get_db() as conn:
-            with conn.cursor(class_row=User) as cur:
-                cur.execute(f"""
+        async with get_db() as conn:
+            async with conn.cursor(row_factory=class_row(User)) as cur:
+                await cur.execute(f"""
                     UPDATE users
                     SET {columns}
                     WHERE id = %s 
                     RETURNING *
                 """, values)
-                return cur.fetchone()
+                return await cur.fetchone()

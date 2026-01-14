@@ -1,4 +1,4 @@
-from psycopg_pool import ConnectionPool
+from psycopg_pool import ConnectionPool, AsyncConnectionPool
 from app.config import config
 
 conninfo = f'''
@@ -9,7 +9,7 @@ host={config.POSTGRES_HOST}
 port={config.POSTGRES_PORT}
 '''
 
-pool = ConnectionPool(conninfo, max_size=10, open=False)
+pool = AsyncConnectionPool(conninfo, max_size=10, open=False)
 
 def get_db():
     return pool.connection()

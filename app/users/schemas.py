@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 from app.users.models import UserRole
@@ -24,4 +25,6 @@ class UserResponseDTO(UserBase):
 
 
 class UserUpdateDTO(BaseModel):
-    phone: str | None = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone: Optional[str] = None
