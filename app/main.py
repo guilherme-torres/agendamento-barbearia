@@ -1,6 +1,9 @@
 from contextlib import asynccontextmanager
 from typing import List
 from fastapi import Depends, FastAPI
+from app.auth.dependencies import get_auth_service
+from app.auth.schemas import LoginDTO
+from app.auth.services import AuthService
 from app.database import pool
 from app.users.dependencies import get_user_service
 from app.users.schemas import UserCreateDTO, UserResponseDTO, UserUpdateDTO
@@ -41,3 +44,7 @@ async def update_user(
 @app.delete("/users/{id}")
 async def delete_user(id: int, service: UserService = Depends(get_user_service)):
     return await service.delete(id)
+
+@app.post("/auth/login")
+async def login(data: LoginDTO, service: AuthService = Depends(get_auth_service)):
+    return await service.login(data)

@@ -1,7 +1,7 @@
 from fastapi import HTTPException
+from app.auth.utils import get_password_hash
 from app.users.repository import UserRepository
 from app.users.schemas import UserCreateDTO, UserResponseDTO, UserUpdateDTO
-from app.utils.password_hashing import get_password_hash
 
 
 class UserService:
@@ -28,7 +28,6 @@ class UserService:
         return UserResponseDTO.model_validate(user)
     
     async def update(self, id: int, data: UserUpdateDTO):
-        print(data.model_dump(exclude_unset=True))
         user = await self.user_repo.update(id, data.model_dump(exclude_unset=True))
         if not user:
             raise HTTPException(404, "usuário não encontrado")

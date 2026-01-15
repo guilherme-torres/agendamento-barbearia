@@ -53,3 +53,9 @@ class UserRepository:
                     RETURNING *
                 """, values)
                 return await cur.fetchone()
+            
+    async def get_by_email(self, email: str):
+        async with get_db() as conn:
+            async with conn.cursor(row_factory=class_row(User)) as cur:
+                await cur.execute("""SELECT * FROM users WHERE email = %s""", (email,))
+                return await cur.fetchone()

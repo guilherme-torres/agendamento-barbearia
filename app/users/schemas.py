@@ -1,13 +1,13 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 from app.users.models import UserRole
 
 
 class UserBase(BaseModel):
     first_name: str
     last_name: str
-    email: str
+    email: EmailStr
     phone: str
 
 
