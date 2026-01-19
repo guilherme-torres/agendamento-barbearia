@@ -21,7 +21,7 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     """Upgrade schema."""
     op.execute("""
-    CREATE TABLE IF NOT EXISTS services (
+    CREATE TABLE IF NOT EXISTS catalog_items (
         id SERIAL PRIMARY KEY,
         barber_id INTEGER REFERENCES users (id),
         name VARCHAR(100) NOT NULL,
@@ -34,4 +34,4 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.execute("""DROP TABLE IF EXISTS services CASCADE""")
+    op.execute("""DROP TABLE IF EXISTS catalog_items CASCADE""")

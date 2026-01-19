@@ -28,7 +28,8 @@ def upgrade() -> None:
         start_time TIME NOT NULL,
         end_time TIME NOT NULL,
         break_start TIME,
-        break_end TIME
+        break_end TIME,
+        tolerance INTERVAL DEFAULT '00:00:00'
     )
     """)
 

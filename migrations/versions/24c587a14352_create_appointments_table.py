@@ -25,7 +25,7 @@ def upgrade() -> None:
         id SERIAL PRIMARY KEY,
         client_id INTEGER REFERENCES users (id),
         barber_id INTEGER REFERENCES users (id),
-        service_id INTEGER REFERENCES services (id)
+        catalog_item_id INTEGER REFERENCES catalog_items (id),
         appointment_date DATE NOT NULL,
         appointment_time TIME NOT NULL,
         status VARCHAR(10) CHECK (status in ('scheduled', 'finished', 'canceled')) DEFAULT 'scheduled',
