@@ -5,7 +5,7 @@ from app.catalog_items.schemas import CatalogItemCreateDTO, CatalogItemResponseD
 from app.catalog_items.service import CatalogItemService
 
 
-router = APIRouter(prefix="/catalog-items")
+router = APIRouter(prefix="/catalog-items", tags=["Catalog Items"])
 
 @router.post("/", response_model=CatalogItemResponseDTO)
 async def create_catalog_item(

@@ -21,6 +21,10 @@ class UserService:
         users = await self.user_repo.get_all()
         return [UserResponseDTO.model_validate(user) for user in users]
     
+    async def list_barbers(self, limit: int = 100, offset: int = 0):
+        users = await self.user_repo.list_barbers(limit=limit, offset=offset)
+        return [UserResponseDTO.model_validate(user) for user in users]
+    
     async def get(self, id: int):
         user = await self.user_repo.get(id)
         if not user:

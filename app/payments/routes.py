@@ -5,7 +5,7 @@ from app.payments.schemas import PaymentCreateDTO, PaymentResponseDTO, PaymentUp
 from app.payments.service import PaymentService
 
 
-router = APIRouter(prefix="/payments")
+router = APIRouter(prefix="/payments", tags=["Payments"])
 
 @router.post("/", response_model=PaymentResponseDTO)
 async def create_payment(

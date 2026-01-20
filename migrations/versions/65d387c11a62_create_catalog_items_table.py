@@ -1,4 +1,4 @@
-"""create services table
+"""create catalog items table
 
 Revision ID: 65d387c11a62
 Revises: 40e5647cee92

@@ -4,7 +4,7 @@ from app.auth.schemas import LoginDTO
 from app.auth.service import AuthService
 
 
-router = APIRouter(prefix="/auth")
+router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @router.post("/login")
 async def login(data: LoginDTO, service: AuthService = Depends(get_auth_service)):

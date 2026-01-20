@@ -5,7 +5,7 @@ from app.appointments.schemas import AppointmentCreateDTO, AppointmentResponseDT
 from app.appointments.service import AppointmentService
 
 
-router = APIRouter(prefix="/appointments")
+router = APIRouter(prefix="/appointments", tags=["Appointments"])
 
 @router.post("/", response_model=AppointmentResponseDTO)
 async def create_appointment(

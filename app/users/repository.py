@@ -59,3 +59,12 @@ class UserRepository:
             async with conn.cursor(row_factory=class_row(User)) as cur:
                 await cur.execute("""SELECT * FROM users WHERE email = %s""", (email,))
                 return await cur.fetchone()
+            
+    async def list_barbers(self, limit: int = 100, offset: int = 0):
+        async with get_db() as conn:
+            async with conn.cursor(row_factory=class_row(User)) as cur:
+                await cur.execute("""
+                    SELECT * FROM users WHERE role = 'barber'
+                    ORDER BY id LIMIT %s OFFSET %s
+                """, (limit, offset))
+                return await cur.fetchall()

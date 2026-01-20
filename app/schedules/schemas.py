@@ -4,7 +4,6 @@ from pydantic import BaseModel, ConfigDict
 
 
 class ScheduleBase(BaseModel):
-    barber_id: int
     day_of_week: int
     start_time: time
     end_time: time
@@ -18,6 +17,7 @@ class ScheduleCreateDTO(ScheduleBase):
 
 class ScheduleResponseDTO(ScheduleBase):
     id: int
+    barber_id: int
     tolerance: timedelta
 
     model_config = ConfigDict(from_attributes=True)
