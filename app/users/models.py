@@ -4,14 +4,14 @@ from enum import Enum
 
 
 class UserRole(str, Enum):
+    ADMIN = "admin"
     BARBER = "barber"
     CLIENT = "client"
 
 @dataclass
 class User:
     id: int
-    first_name: str
-    last_name: str
+    name: str
     email: str
     password_hash: str
     role: UserRole

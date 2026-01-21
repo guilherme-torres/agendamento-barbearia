@@ -29,7 +29,8 @@ def upgrade() -> None:
         end_time TIME NOT NULL,
         break_start TIME,
         break_end TIME,
-        tolerance INTERVAL DEFAULT '00:00:00'
+        tolerance INTERVAL DEFAULT '00:00:00',
+        UNIQUE (barber_id, day_of_week)
     )
     """)
 

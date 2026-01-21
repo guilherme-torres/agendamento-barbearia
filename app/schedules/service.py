@@ -11,6 +11,8 @@ class ScheduleService:
         data: dict = data.model_dump()
         data.update({"barber_id": auth_user_id})
         schedule = await self.schedule_repo.create(data)
+        if not schedule:
+            raise HTTPException(400, "este horário já foi cadastrado")
         return ScheduleResponseDTO.model_validate(schedule)
     
     async def get_all(self):

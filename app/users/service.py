@@ -17,12 +17,8 @@ class UserService:
             raise HTTPException(400, "um usuário com este email já existe")
         return UserResponseDTO.model_validate(user)
     
-    async def get_all(self):
-        users = await self.user_repo.get_all()
-        return [UserResponseDTO.model_validate(user) for user in users]
-    
-    async def list_barbers(self, limit: int = 100, offset: int = 0):
-        users = await self.user_repo.list_barbers(limit=limit, offset=offset)
+    async def get_all(self, limit: int = 100, offset: int = 0):
+        users = await self.user_repo.get_all(limit=limit, offset=offset)
         return [UserResponseDTO.model_validate(user) for user in users]
     
     async def get(self, id: int):

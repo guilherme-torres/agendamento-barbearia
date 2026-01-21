@@ -5,8 +5,7 @@ from app.users.models import UserRole
 
 
 class UserBase(BaseModel):
-    first_name: str
-    last_name: str
+    name: str
     email: EmailStr
     phone: str
 
@@ -25,6 +24,5 @@ class UserResponseDTO(UserBase):
 
 
 class UserUpdateDTO(BaseModel):
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
+    name: Optional[str] = None
     phone: Optional[str] = None

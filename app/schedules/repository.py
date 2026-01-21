@@ -11,6 +11,7 @@ class ScheduleRepository:
                     INSERT INTO schedules
                     (barber_id, day_of_week, start_time, end_time, break_start, break_end, tolerance)
                     VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (barber_id, day_of_week) DO NOTHING
                     RETURNING *
                 """, (
                     data["barber_id"], 
@@ -54,3 +55,9 @@ class ScheduleRepository:
                     RETURNING *
                 """, values)
                 return await cur.fetchone()
+            
+    async def get_by_barber_id(self, id: int):
+        async with get_db() as conn:
+            async with conn.cursor(row_factory=class_row(Schedule)) as cur:
+                await cur.execute("""SELECT * FROM schedules WHERE barber_id = %s""", (id,))
+                return await cur.fetchall()

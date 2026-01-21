@@ -9,13 +9,12 @@ class UserRepository:
             async with conn.cursor(row_factory=class_row(User)) as cur:
                 await cur.execute("""
                     INSERT INTO users
-                    (first_name, last_name, email, password_hash, phone)
-                    VALUES (%s, %s, %s, %s, %s)
+                    (name, email, password_hash, phone)
+                    VALUES (%s, %s, %s, %s)
                     ON CONFLICT (email) DO NOTHING
                     RETURNING *
                 """, (
-                    data["first_name"], 
-                    data["last_name"], 
+                    data["name"], 
                     data["email"], 
                     data["password_hash"], 
                     data["phone"]
@@ -28,10 +27,13 @@ class UserRepository:
                 await cur.execute("""SELECT * FROM users WHERE id = %s""", (id,))
                 return await cur.fetchone()
 
-    async def get_all(self):
+    async def get_all(self, limit: int = 100, offset: int = 0):
         async with get_db() as conn:
             async with conn.cursor(row_factory=class_row(User)) as cur:
-                await cur.execute("""SELECT * FROM users LIMIT 100""")
+                await cur.execute("""
+                    SELECT * FROM users
+                    ORDER BY id LIMIT %s OFFSET %s
+                """, (limit, offset))
                 return await cur.fetchall()
 
     async def delete(self, id: int):
@@ -59,12 +61,3 @@ class UserRepository:
             async with conn.cursor(row_factory=class_row(User)) as cur:
                 await cur.execute("""SELECT * FROM users WHERE email = %s""", (email,))
                 return await cur.fetchone()
-            
-    async def list_barbers(self, limit: int = 100, offset: int = 0):
-        async with get_db() as conn:
-            async with conn.cursor(row_factory=class_row(User)) as cur:
-                await cur.execute("""
-                    SELECT * FROM users WHERE role = 'barber'
-                    ORDER BY id LIMIT %s OFFSET %s
-                """, (limit, offset))
-                return await cur.fetchall()

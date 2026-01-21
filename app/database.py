@@ -1,12 +1,12 @@
-from psycopg_pool import ConnectionPool, AsyncConnectionPool
-from app.config import config
+from psycopg_pool import AsyncConnectionPool
+from app.config import get_settings
 
 conninfo = f'''
-dbname={config.POSTGRES_DB}
-user={config.POSTGRES_USER}
-password={config.POSTGRES_PASSWORD}
-host={config.POSTGRES_HOST}
-port={config.POSTGRES_PORT}
+dbname={get_settings().POSTGRES_DB}
+user={get_settings().POSTGRES_USER}
+password={get_settings().POSTGRES_PASSWORD}
+host={get_settings().POSTGRES_HOST}
+port={get_settings().POSTGRES_PORT}
 '''
 
 pool = AsyncConnectionPool(conninfo, max_size=10, open=False)
