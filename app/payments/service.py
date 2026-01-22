@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from app.payments.exceptions import PaymentNotFound
 from app.payments.repository import PaymentRepository
 from app.payments.schemas import PaymentCreateDTO, PaymentResponseDTO, PaymentUpdateDTO
 
@@ -18,17 +18,17 @@ class PaymentService:
     async def get(self, id: int):
         payment = await self.payment_repo.get(id)
         if not payment:
-            raise HTTPException(404, "pagamento não encontrado")
+            raise PaymentNotFound
         return PaymentResponseDTO.model_validate(payment)
     
     async def update(self, id: int, data: PaymentUpdateDTO):
         payment = await self.payment_repo.update(id, data.model_dump(exclude_unset=True))
         if not payment:
-            raise HTTPException(404, "pagamento não encontrado")
+            raise PaymentNotFound
         return PaymentResponseDTO.model_validate(payment)
 
     async def delete(self, id: int):
         payment_id = await self.payment_repo.delete(id)
         if not payment_id:
-            raise HTTPException(404, "pagamento não encontrado")
+            raise PaymentNotFound
         return None

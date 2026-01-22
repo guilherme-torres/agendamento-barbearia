@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.database import pool
+from app.exception_handlers import register_exception_handlers
 from app.users.routes import router as user_router
 from app.auth.routes import router as auth_router
 from app.schedules.routes import router as schedule_router
@@ -16,6 +17,8 @@ async def lifespan(app: FastAPI):
     await pool.close()
 
 app = FastAPI(lifespan=lifespan)
+
+register_exception_handlers(app)
 
 app.include_router(user_router)
 app.include_router(auth_router)

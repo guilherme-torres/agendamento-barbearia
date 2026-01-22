@@ -23,6 +23,11 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str
     REFRESH_TOKEN_EXPIRE_HOURS: int
 
+    REDIS_HOST: str
+    REDIS_PORT: int
+    REDIS_DB: int
+
+
 @lru_cache
 def get_settings():
     return Settings()

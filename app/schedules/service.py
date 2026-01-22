@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from app.schedules.exceptions import Forbidden, ScheduleAlreadyExists, ScheduleNotFound
 from app.schedules.repository import ScheduleRepository
 from app.schedules.schemas import ScheduleCreateDTO, ScheduleResponseDTO, ScheduleUpdateDTO
 
@@ -12,7 +12,7 @@ class ScheduleService:
         data.update({"barber_id": auth_user_id})
         schedule = await self.schedule_repo.create(data)
         if not schedule:
-            raise HTTPException(400, "este horário já foi cadastrado")
+            raise ScheduleAlreadyExists
         return ScheduleResponseDTO.model_validate(schedule)
     
     async def get_all(self):
@@ -22,22 +22,22 @@ class ScheduleService:
     async def get(self, id: int):
         schedule = await self.schedule_repo.get(id)
         if not schedule:
-            raise HTTPException(404, "horário não encontrado")
+            raise ScheduleNotFound
         return ScheduleResponseDTO.model_validate(schedule)
     
     async def update(self, id: int, data: ScheduleUpdateDTO, auth_user_id: int):
         schedule = await self.schedule_repo.update(id, data.model_dump(exclude_unset=True))
         if not schedule:
-            raise HTTPException(404, "horário não encontrado")
+            raise ScheduleNotFound
         if schedule.barber_id != auth_user_id:
-            raise HTTPException(403, "operação proibida")
+            raise Forbidden
         return ScheduleResponseDTO.model_validate(schedule)
 
     async def delete(self, id: int, auth_user_id: int):
         schedule = await self.schedule_repo.get(id)
         if not schedule:
-            raise HTTPException(404, "horário não encontrado")
+            raise ScheduleNotFound
         if schedule.barber_id != auth_user_id:
-            raise HTTPException(403, "operação proibida")
+            raise Forbidden
         await self.schedule_repo.delete(id)
         return None

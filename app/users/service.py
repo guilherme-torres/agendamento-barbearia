@@ -1,7 +1,9 @@
-from fastapi import HTTPException
-from app.auth.utils import get_password_hash
+import time
+from app.auth.utils import decode_jwt, get_password_hash, revoke_jwt
+from app.users.exceptions import UserAlreadyExists, UserNotFound
 from app.users.repository import UserRepository
 from app.users.schemas import UserCreateDTO, UserResponseDTO, UserUpdateDTO
+from app.utils import redis_client
 
 
 class UserService:
@@ -14,7 +16,7 @@ class UserService:
         data["password_hash"] = get_password_hash(password)
         user = await self.user_repo.create(data)
         if not user:
-            raise HTTPException(400, "um usuário com este email já existe")
+            raise UserAlreadyExists
         return UserResponseDTO.model_validate(user)
     
     async def get_all(self, limit: int = 100, offset: int = 0):
@@ -24,17 +26,17 @@ class UserService:
     async def get(self, id: int):
         user = await self.user_repo.get(id)
         if not user:
-            raise HTTPException(404, "usuário não encontrado")
+            raise UserNotFound
         return UserResponseDTO.model_validate(user)
     
     async def update(self, id: int, data: UserUpdateDTO):
         user = await self.user_repo.update(id, data.model_dump(exclude_unset=True))
         if not user:
-            raise HTTPException(404, "usuário não encontrado")
+            raise UserNotFound
         return UserResponseDTO.model_validate(user)
 
-    async def delete(self, id: int):
+    async def delete(self, id: int, token: str):
         user_id = await self.user_repo.delete(id)
         if not user_id:
-            raise HTTPException(404, "usuário não encontrado")
-        return None
+            raise UserNotFound
+        return revoke_jwt(token)

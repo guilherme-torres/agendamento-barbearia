@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from app.catalog_items.exceptions import CatalogItemNotFound
 from app.catalog_items.repository import CatalogItemRepository
 from app.catalog_items.schemas import CatalogItemCreateDTO, CatalogItemResponseDTO, CatalogItemUpdateDTO
 
@@ -18,17 +18,17 @@ class CatalogItemService:
     async def get(self, id: int):
         catalog_item = await self.catalog_item_repo.get(id)
         if not catalog_item:
-            raise HTTPException(404, "serviço não encontrado")
+            raise CatalogItemNotFound
         return CatalogItemResponseDTO.model_validate(catalog_item)
     
     async def update(self, id: int, data: CatalogItemUpdateDTO):
         catalog_item = await self.catalog_item_repo.update(id, data.model_dump(exclude_unset=True))
         if not catalog_item:
-            raise HTTPException(404, "serviço não encontrado")
+            raise CatalogItemNotFound
         return CatalogItemResponseDTO.model_validate(catalog_item)
 
     async def delete(self, id: int):
         catalog_item_id = await self.catalog_item_repo.delete(id)
         if not catalog_item_id:
-            raise HTTPException(404, "serviço não encontrado")
+            raise CatalogItemNotFound
         return None
